@@ -1,38 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../Styles/Feed.css';
 import StoryReel from './StoryReel';
 import MessageSender from './MessageSender';
 import Post from './Post';
+import db from '../Config/firebase';
 
 function Feed() {
+	const [posts, setPosts] = useState([]);
+
+	useEffect(() => {
+		db.collection('fc-posts')
+			.orderBy('timestamp', 'desc')
+			.onSnapshot((snapshot) =>
+				setPosts(
+					snapshot.docs.map((doc) => ({
+						id: doc.id,
+						data: doc.data(),
+					}))
+				)
+			);
+	}, []);
 	return (
 		<div className="feed">
 			<StoryReel />
 			<MessageSender />
 
-			<Post
-				key="001"
-				profilePic="https://avatars.services.sap.com/images/john.liberal2.png"
-				message="Cool, estamos funcionando"
-				timestamp="Aquí va el timestamp"
-				username="johnplex"
-				image="https://3.bp.blogspot.com/_AnUh46tmTrA/R2glq-f1bpI/AAAAAAAAAB0/f-FjJKwyvlI/w1200-h630-p-k-no-nu/Blog+Zip+Compress.JPG"
-			/>
-			<Post
-				key="002"
-				profilePic="https://avatars.services.sap.com/images/john.liberal2.png"
-				message="F*ck 2020"
-				timestamp="Aquí va el timestamp"
-				username="johnplex"
-				image="https://pbs.twimg.com/media/EVT4J7VXYAE6olm.jpg"
-			/>
-			<Post
-				key="003"
-				profilePic="https://avatars.services.sap.com/images/john.liberal2.png"
-				message="Hello World"
-				timestamp="Aquí va el timestamp"
-				username="johnplex"
-			/>
+			{posts.map((post) => (
+				<Post
+					key={post.data.id}
+					profilePic={post.data.profilePic}
+					message={post.data.message}
+					timestamp={post.data.timestamp}
+					username={post.data.username}
+					image={post.data.image}
+				/>
+			))}
 		</div>
 	);
 }

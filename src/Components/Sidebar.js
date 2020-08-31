@@ -8,14 +8,13 @@ import StorefrontIcon from '@material-ui/icons/Storefront';
 import VideoLibraryIcon from '@material-ui/icons/VideoLibrary';
 import ExpandMoreOutlined from '@material-ui/icons/ExpandMoreOutlined';
 import '../Styles/Sidebar.css';
+import { useStateValue } from '../DataLayer/StateProvider';
 
 function Sidebar() {
+	const [{ user }, dispatch] = useStateValue();
 	return (
 		<div className="sidebar">
-			<SidebarRow
-				src="https://docs.atlassian.com/aui/9.0.0/docs/images/avatar-person.svg"
-				title="Johnplex U4P"
-			/>
+			<SidebarRow src={user.photoURL} title={user.displayName} />
 			<SidebarRow Icon={EmojiFlagsIcon} title="COVID-19 Information Center" />
 			<SidebarRow Icon={PeopleIcon} title="Pages" />
 			<SidebarRow Icon={ChatIcon} title="Friends" />
